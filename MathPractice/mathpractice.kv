@@ -1,0 +1,822 @@
+#:import dp kivy.metrics.dp
+
+
+# ============================================================
+# SOFT BUTTON
+# ============================================================
+
+<SoftButton@Button>:
+
+    background_normal: ""
+    background_down: ""
+    background_color: 0, 0, 0, 0
+
+    color: 1, 1, 1, 1
+
+    font_size: dp(16)
+    bold: True
+
+    size_hint_y: None
+    height: dp(58)
+
+    canvas.before:
+
+        Color:
+            rgba: 0.55, 0.47, 0.78, 1
+
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(15)]
+
+
+# ============================================================
+# LOGIN
+# ============================================================
+
+<LoginScreen>:
+
+    canvas.before:
+
+        Color:
+            rgba: 0.94, 0.91, 1, 1
+
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+        Color:
+            rgba: 0.87, 0.92, 1, 0.8
+
+        Rectangle:
+            pos: self.x, self.y
+            size: self.width, self.height * 0.45
+
+
+    BoxLayout:
+
+        orientation: "vertical"
+
+        padding: dp(28)
+        spacing: dp(14)
+
+
+        Widget:
+            size_hint_y: 0.25
+
+
+        Label:
+
+            text: "MATH PRACTICE"
+
+            font_size: dp(30)
+            bold: True
+
+            color: 0.28, 0.23, 0.40, 1
+
+            size_hint_y: None
+            height: dp(55)
+
+
+        Label:
+
+            text: "Belajar matematika dengan cara yang seru"
+
+            font_size: dp(15)
+
+            color: 0.40, 0.36, 0.48, 1
+
+            size_hint_y: None
+            height: dp(45)
+
+
+        TextInput:
+
+            id: username
+
+            hint_text: "Masukkan username"
+
+            multiline: False
+
+            font_size: dp(17)
+
+            padding: dp(15)
+
+            size_hint_y: None
+            height: dp(58)
+
+            on_text_validate:
+                app.login(self.text)
+
+
+        SoftButton:
+
+            text: "MASUK"
+
+            on_release:
+                app.login(username.text)
+
+
+        Label:
+
+            text: "Masukkan nama untuk mulai latihan."
+
+            font_size: dp(13)
+
+            color: 0.45, 0.41, 0.52, 1
+
+            size_hint_y: None
+            height: dp(35)
+
+
+        Widget:
+            size_hint_y: 0.45
+
+
+# ============================================================
+# HOME
+# ============================================================
+
+<HomeScreen>:
+
+    canvas.before:
+
+        Color:
+            rgba: 0.94, 0.91, 1, 1
+
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+        Color:
+            rgba: 0.87, 0.92, 1, 0.8
+
+        Rectangle:
+            pos: self.x, self.y
+            size: self.width, self.height * 0.40
+
+
+    BoxLayout:
+
+        orientation: "vertical"
+
+        padding: dp(28)
+        spacing: dp(16)
+
+
+        Widget:
+            size_hint_y: 0.18
+
+
+        Label:
+
+            text: "Halo, " + app.username
+
+            font_size: dp(27)
+            bold: True
+
+            color: 0.28, 0.23, 0.40, 1
+
+            size_hint_y: None
+            height: dp(50)
+
+
+        Label:
+
+            text: "Siap latihan matematika hari ini?"
+
+            font_size: dp(16)
+
+            color: 0.40, 0.36, 0.48, 1
+
+            size_hint_y: None
+            height: dp(40)
+
+
+        SoftButton:
+
+            text: "MULAI LATIHAN"
+
+            on_release:
+                root.manager.current = "operation"
+
+
+        Widget:
+
+
+        Button:
+
+            text: "Logout"
+
+            background_normal: ""
+            background_color: 0, 0, 0, 0
+
+            color: 0.45, 0.40, 0.55, 1
+
+            size_hint_y: None
+            height: dp(45)
+
+            on_release:
+                app.logout()
+
+
+        Widget:
+            size_hint_y: 0.35
+
+
+# ============================================================
+# PILIH OPERASI
+# ============================================================
+
+<OperationScreen>:
+
+    canvas.before:
+
+        Color:
+            rgba: 0.94, 0.91, 1, 1
+
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+        Color:
+            rgba: 0.86, 0.93, 0.95, 0.8
+
+        Rectangle:
+            pos: self.x, self.y
+            size: self.width, self.height * 0.30
+
+
+    BoxLayout:
+
+        orientation: "vertical"
+
+        padding: dp(22)
+        spacing: dp(12)
+
+
+        Label:
+
+            text: "PILIH LATIHAN"
+
+            font_size: dp(27)
+            bold: True
+
+            color: 0.28, 0.23, 0.40, 1
+
+            size_hint_y: None
+            height: dp(55)
+
+
+        Label:
+
+            text: "Mau latihan matematika yang mana?"
+
+            font_size: dp(15)
+
+            color: 0.42, 0.38, 0.50, 1
+
+            size_hint_y: None
+            height: dp(35)
+
+
+        GridLayout:
+
+            cols: 2
+
+            spacing: dp(10)
+
+
+            SoftButton:
+
+                text: "×\nPerkalian"
+
+                on_release:
+                    app.select_operation("Perkalian")
+
+
+            SoftButton:
+
+                text: "÷\nPembagian"
+
+                on_release:
+                    app.select_operation("Pembagian")
+
+
+            SoftButton:
+
+                text: "+\nPertambahan"
+
+                on_release:
+                    app.select_operation("Pertambahan")
+
+
+            SoftButton:
+
+                text: "−\nPengurangan"
+
+                on_release:
+                    app.select_operation("Pengurangan")
+
+
+            SoftButton:
+
+                text: "x² / x³\nPerpangkatan"
+
+                on_release:
+                    app.select_operation("Perpangkatan")
+
+
+            SoftButton:
+
+                text: "√ / ∛\nAkar"
+
+                on_release:
+                    app.select_operation("Akar")
+
+
+        Button:
+
+            text: "← Kembali"
+
+            background_normal: ""
+            background_color: 0, 0, 0, 0
+
+            color: 0.40, 0.35, 0.50, 1
+
+            size_hint_y: None
+            height: dp(48)
+
+            on_release:
+                root.manager.current = "home"
+
+
+# ============================================================
+# PILIH LEVEL
+# ============================================================
+
+<LevelScreen>:
+
+    canvas.before:
+
+        Color:
+            rgba: 0.94, 0.91, 1, 1
+
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+        Color:
+            rgba: 0.88, 0.94, 0.93, 0.8
+
+        Rectangle:
+            pos: self.x, self.y
+            size: self.width, self.height * 0.35
+
+
+    BoxLayout:
+
+        orientation: "vertical"
+
+        padding: dp(24)
+        spacing: dp(12)
+
+
+        Label:
+
+            text: "PILIH LEVEL"
+
+            font_size: dp(28)
+            bold: True
+
+            color: 0.28, 0.23, 0.40, 1
+
+            size_hint_y: None
+            height: dp(55)
+
+
+        Label:
+
+            text: "Operasi: " + app.selected_operation
+
+            font_size: dp(16)
+
+            color: 0.43, 0.39, 0.50, 1
+
+            size_hint_y: None
+            height: dp(35)
+
+
+        # ====================================================
+        # LEVEL A
+        # ====================================================
+
+        SoftButton:
+
+            text: "A - SATUAN\n1 sampai 9"
+
+            opacity: 1 if app.selected_operation in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"] else 0
+
+            disabled: app.selected_operation not in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"]
+
+            on_release:
+                app.select_level("A")
+
+
+        # ====================================================
+        # LEVEL B
+        # ====================================================
+
+        SoftButton:
+
+            text: "B - PULUHAN\n10 sampai 50"
+
+            opacity: 1 if app.selected_operation in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"] else 0
+
+            disabled: app.selected_operation not in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"]
+
+            on_release:
+                app.select_level("B")
+
+
+        # ====================================================
+        # LEVEL C
+        # ====================================================
+
+        SoftButton:
+
+            text: "C - TINGGI\n60 sampai 100"
+
+            opacity: 1 if app.selected_operation in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"] else 0
+
+            disabled: app.selected_operation not in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"]
+
+            on_release:
+                app.select_level("C")
+
+
+        # ====================================================
+        # PANGKAT 2
+        # ====================================================
+
+        SoftButton:
+
+            text: "PANGKAT 2\nContoh: 7² = 49"
+
+            opacity: 1 if app.selected_operation == "Perpangkatan" else 0
+
+            disabled: app.selected_operation != "Perpangkatan"
+
+            on_release:
+                app.select_level("2")
+
+
+        # ====================================================
+        # PANGKAT 3
+        # ====================================================
+
+        SoftButton:
+
+            text: "PANGKAT 3\nContoh: 4³ = 64"
+
+            opacity: 1 if app.selected_operation == "Perpangkatan" else 0
+
+            disabled: app.selected_operation != "Perpangkatan"
+
+            on_release:
+                app.select_level("3")
+
+
+        # ====================================================
+        # AKAR 2
+        # ====================================================
+
+        SoftButton:
+
+            text: "AKAR 2\nContoh: √81 = 9"
+
+            opacity: 1 if app.selected_operation == "Akar" else 0
+
+            disabled: app.selected_operation != "Akar"
+
+            on_release:
+                app.select_level("2")
+
+
+        # ====================================================
+        # AKAR 3
+        # ====================================================
+
+        SoftButton:
+
+            text: "AKAR 3\nContoh: ∛64 = 4"
+
+            opacity: 1 if app.selected_operation == "Akar" else 0
+
+            disabled: app.selected_operation != "Akar"
+
+            on_release:
+                app.select_level("3")
+
+
+        Widget:
+
+
+# ============================================================
+# QUIZ
+# ============================================================
+
+<QuizScreen>:
+
+    canvas.before:
+
+        Color:
+            rgba: 0.95, 0.92, 1, 1
+
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+        Color:
+            rgba: 0.86, 0.93, 0.95, 0.7
+
+        Rectangle:
+            pos: self.x, self.y
+            size: self.width, self.height * 0.30
+
+
+    BoxLayout:
+
+        orientation: "vertical"
+
+        padding: dp(22)
+        spacing: dp(12)
+
+
+        # ====================================================
+        # HEADER
+        # ====================================================
+
+        BoxLayout:
+
+            size_hint_y: None
+            height: dp(45)
+
+
+            Label:
+
+                text: "SOAL " + str(root.question_number) + " / 10"
+
+                font_size: dp(18)
+
+                bold: True
+
+                color: 0.43, 0.38, 0.50, 1
+
+
+            Button:
+
+                text: "← GANTI LATIHAN"
+
+                background_normal: ""
+                background_color: 0, 0, 0, 0
+
+                color: 0.55, 0.25, 0.35, 1
+
+                font_size: dp(12)
+
+                size_hint_x: 0.45
+
+                on_release:
+                    app.leave_quiz()
+
+
+        # ====================================================
+        # OPERASI
+        # ====================================================
+
+        Label:
+
+            text: app.selected_operation
+
+            font_size: dp(16)
+
+            color: 0.55, 0.47, 0.70, 1
+
+            size_hint_y: None
+            height: dp(35)
+
+
+        Widget:
+            size_hint_y: 0.08
+
+
+        # ====================================================
+        # SOAL
+        # ====================================================
+
+        Label:
+
+            text: root.question
+
+            font_size: dp(38)
+
+            bold: True
+
+            color: 0.28, 0.23, 0.40, 1
+
+            size_hint_y: None
+            height: dp(100)
+
+
+        # ====================================================
+        # PETUNJUK
+        # ====================================================
+
+        Label:
+
+            text: "Masukkan jawabanmu"
+
+            font_size: dp(15)
+
+            color: 0.43, 0.39, 0.50, 1
+
+            size_hint_y: None
+            height: dp(35)
+
+
+        # ====================================================
+        # INPUT JAWABAN
+        # ====================================================
+
+        TextInput:
+
+            id: answer_input
+
+            multiline: False
+
+            input_filter: "int"
+
+            halign: "center"
+
+            font_size: dp(25)
+
+            size_hint_y: None
+            height: dp(58)
+
+            padding: dp(12)
+
+            on_text_validate:
+                root.submit_answer()
+
+
+        # ====================================================
+        # FEEDBACK BENAR / SALAH
+        # ====================================================
+
+        Label:
+
+            text: root.feedback
+
+            font_size: dp(16)
+
+            bold: True
+
+            size_hint_y: None
+            height: dp(38)
+
+            color:
+                (0.20, 0.60, 0.35, 1) if root.feedback_color == "correct" else \
+                (0.85, 0.20, 0.25, 1) if root.feedback_color == "wrong" else \
+                (0.80, 0.50, 0.15, 1)
+
+
+        # ====================================================
+        # BUTTON JAWAB
+        # ====================================================
+
+        SoftButton:
+
+            text: "JAWAB"
+
+            on_release:
+                root.submit_answer()
+
+
+        # ====================================================
+        # SKOR
+        # ====================================================
+
+        Label:
+
+            text: "Skor sementara: " + str(root.score)
+
+            font_size: dp(16)
+
+            color: 0.43, 0.38, 0.50, 1
+
+            size_hint_y: None
+            height: dp(40)
+
+
+        Widget:
+
+
+# ============================================================
+# RESULT
+# ============================================================
+
+<ResultScreen>:
+
+    canvas.before:
+
+        Color:
+            rgba: 0.94, 0.91, 1, 1
+
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+        Color:
+            rgba: 0.87, 0.94, 0.92, 0.75
+
+        Rectangle:
+            pos: self.x, self.y
+            size: self.width, self.height * 0.35
+
+
+    BoxLayout:
+
+        orientation: "vertical"
+
+        padding: dp(28)
+        spacing: dp(15)
+
+
+        Widget:
+            size_hint_y: 0.20
+
+
+        Label:
+
+            text: "HASIL LATIHAN"
+
+            font_size: dp(28)
+
+            bold: True
+
+            color: 0.28, 0.23, 0.40, 1
+
+            size_hint_y: None
+            height: dp(60)
+
+
+        Label:
+
+            id: score_label
+
+            text: "0 / 100"
+
+            font_size: dp(48)
+
+            bold: True
+
+            color: 0.52, 0.43, 0.72, 1
+
+            size_hint_y: None
+            height: dp(80)
+
+
+        Label:
+
+            id: message_label
+
+            text: ""
+
+            font_size: dp(17)
+
+            color: 0.40, 0.36, 0.48, 1
+
+            text_size: self.width, None
+
+            halign: "center"
+
+
+        SoftButton:
+
+            text: "COBA LAGI"
+
+            on_release:
+                app.retry_quiz()
+
+
+        SoftButton:
+
+            text: "KEMBALI KE HOME"
+
+            on_release:
+                app.back_home()
+
+
+        Widget:
+            size_hint_y: 0.25
