@@ -1,3 +1,18 @@
+# ============================================================
+# WINDOW MOBILE / PORTRAIT
+# ============================================================
+
+from kivy.config import Config
+
+Config.set("graphics", "width", "400")
+Config.set("graphics", "height", "800")
+Config.set("graphics", "resizable", "0")
+
+
+# ============================================================
+# IMPORT
+# ============================================================
+
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -7,31 +22,47 @@ import random
 
 
 # ============================================================
-# LOAD FILE KV
+# LOAD KV
 # ============================================================
 
 Builder.load_file("mathpractice.kv")
 
 
 # ============================================================
-# SCREEN
+# LOGIN SCREEN
 # ============================================================
 
 class LoginScreen(Screen):
     pass
 
 
+# ============================================================
+# HOME SCREEN
+# ============================================================
+
 class HomeScreen(Screen):
     pass
 
+
+# ============================================================
+# OPERATION SCREEN
+# ============================================================
 
 class OperationScreen(Screen):
     pass
 
 
+# ============================================================
+# LEVEL SCREEN
+# ============================================================
+
 class LevelScreen(Screen):
     pass
 
+
+# ============================================================
+# QUIZ SCREEN
+# ============================================================
 
 class QuizScreen(Screen):
 
@@ -40,52 +71,61 @@ class QuizScreen(Screen):
     score = NumericProperty(0)
     correct_answer = NumericProperty(0)
 
-    # Pesan benar / salah
     feedback = StringProperty("")
     feedback_color = StringProperty("")
 
     # ========================================================
-    # FOCUS INPUT
+    # MENYIMPAN KUMPULAN SOAL
     # ========================================================
+
+    question_pool = []
+
+
+    # --------------------------------------------------------
+    # FOCUS INPUT
+    # --------------------------------------------------------
 
     def focus_input(self, *args):
-        if "answer_input" in self.ids:
-            self.ids.answer_input.focus = True
+        self.ids.answer_input.focus = True
 
-    # ========================================================
-    # MULAI QUIZ
-    # ========================================================
+
+    # --------------------------------------------------------
+    # START QUIZ
+    # --------------------------------------------------------
 
     def start_quiz(self):
 
         self.question_number = 1
         self.score = 0
-
         self.feedback = ""
         self.feedback_color = ""
 
+        # Buat kumpulan soal baru setiap latihan
+        self.create_question_pool()
+
         self.new_question()
 
-        if "answer_input" in self.ids:
-            self.ids.answer_input.text = ""
+        self.ids.answer_input.text = ""
 
-        # Fokus otomatis ke input
-        Clock.schedule_once(self.focus_input, 0.3)
+        Clock.schedule_once(
+            lambda dt: self.focus_input(),
+            0.2
+        )
+
 
     # ========================================================
-    # MEMBUAT SOAL
+    # MEMBUAT KUMPULAN SOAL UNIK
     # ========================================================
 
-    def new_question(self):
+    def create_question_pool(self):
 
         app = App.get_running_app()
 
         operation = app.selected_operation
         level = app.selected_level
 
-        # Reset feedback setiap ganti soal
-        self.feedback = ""
-        self.feedback_color = ""
+        pool = []
+
 
         # ====================================================
         # PERKALIAN
@@ -94,19 +134,29 @@ class QuizScreen(Screen):
         if operation == "Perkalian":
 
             if level == "A":
-                a = random.randint(1, 9)
-                b = random.randint(1, 9)
+
+                for a in range(1, 10):
+                    for b in range(1, 10):
+                        pool.append(
+                            (f"{a} × {b} = ?", a * b)
+                        )
 
             elif level == "B":
-                a = random.randint(10, 50)
-                b = random.randint(10, 50)
+
+                for a in range(10, 51):
+                    for b in range(10, 51):
+                        pool.append(
+                            (f"{a} × {b} = ?", a * b)
+                        )
 
             else:
-                a = random.randint(60, 100)
-                b = random.randint(60, 100)
 
-            self.question = f"{a} × {b} = ?"
-            self.correct_answer = a * b
+                for a in range(60, 101):
+                    for b in range(60, 101):
+                        pool.append(
+                            (f"{a} × {b} = ?", a * b)
+                        )
+
 
         # ====================================================
         # PEMBAGIAN
@@ -115,21 +165,47 @@ class QuizScreen(Screen):
         elif operation == "Pembagian":
 
             if level == "A":
-                divisor = random.randint(1, 9)
-                quotient = random.randint(1, 9)
+
+                for divisor in range(1, 10):
+                    for quotient in range(1, 10):
+
+                        dividend = divisor * quotient
+
+                        pool.append(
+                            (
+                                f"{dividend} ÷ {divisor} = ?",
+                                quotient
+                            )
+                        )
 
             elif level == "B":
-                divisor = random.randint(10, 50)
-                quotient = random.randint(1, 10)
+
+                for divisor in range(10, 51):
+                    for quotient in range(1, 11):
+
+                        dividend = divisor * quotient
+
+                        pool.append(
+                            (
+                                f"{dividend} ÷ {divisor} = ?",
+                                quotient
+                            )
+                        )
 
             else:
-                divisor = random.randint(60, 100)
-                quotient = random.randint(1, 10)
 
-            dividend = divisor * quotient
+                for divisor in range(60, 101):
+                    for quotient in range(1, 11):
 
-            self.question = f"{dividend} ÷ {divisor} = ?"
-            self.correct_answer = quotient
+                        dividend = divisor * quotient
+
+                        pool.append(
+                            (
+                                f"{dividend} ÷ {divisor} = ?",
+                                quotient
+                            )
+                        )
+
 
         # ====================================================
         # PERTAMBAHAN
@@ -138,19 +214,29 @@ class QuizScreen(Screen):
         elif operation == "Pertambahan":
 
             if level == "A":
-                a = random.randint(1, 9)
-                b = random.randint(1, 9)
+
+                for a in range(1, 10):
+                    for b in range(1, 10):
+                        pool.append(
+                            (f"{a} + {b} = ?", a + b)
+                        )
 
             elif level == "B":
-                a = random.randint(10, 50)
-                b = random.randint(10, 50)
+
+                for a in range(10, 51):
+                    for b in range(10, 51):
+                        pool.append(
+                            (f"{a} + {b} = ?", a + b)
+                        )
 
             else:
-                a = random.randint(60, 100)
-                b = random.randint(60, 100)
 
-            self.question = f"{a} + {b} = ?"
-            self.correct_answer = a + b
+                for a in range(60, 101):
+                    for b in range(60, 101):
+                        pool.append(
+                            (f"{a} + {b} = ?", a + b)
+                        )
+
 
         # ====================================================
         # PENGURANGAN
@@ -159,23 +245,41 @@ class QuizScreen(Screen):
         elif operation == "Pengurangan":
 
             if level == "A":
-                a = random.randint(1, 9)
-                b = random.randint(1, 9)
+
+                for a in range(1, 10):
+                    for b in range(1, 10):
+
+                        if b > a:
+                            continue
+
+                        pool.append(
+                            (f"{a} − {b} = ?", a - b)
+                        )
 
             elif level == "B":
-                a = random.randint(10, 50)
-                b = random.randint(10, 50)
+
+                for a in range(10, 51):
+                    for b in range(10, 51):
+
+                        if b > a:
+                            continue
+
+                        pool.append(
+                            (f"{a} − {b} = ?", a - b)
+                        )
 
             else:
-                a = random.randint(60, 100)
-                b = random.randint(60, 100)
 
-            # Supaya tidak negatif
-            if b > a:
-                a, b = b, a
+                for a in range(60, 101):
+                    for b in range(60, 101):
 
-            self.question = f"{a} - {b} = ?"
-            self.correct_answer = a - b
+                        if b > a:
+                            continue
+
+                        pool.append(
+                            (f"{a} − {b} = ?", a - b)
+                        )
+
 
         # ====================================================
         # PERPANGKATAN
@@ -183,16 +287,29 @@ class QuizScreen(Screen):
 
         elif operation == "Perpangkatan":
 
-            power = int(level)
+            if level == "2":
 
-            if power == 2:
-                base = random.randint(1, 10)
+                for base in range(1, 11):
 
-            else:
-                base = random.randint(1, 7)
+                    pool.append(
+                        (
+                            f"{base}² = ?",
+                            base ** 2
+                        )
+                    )
 
-            self.question = f"{base}^{power} = ?"
-            self.correct_answer = base ** power
+            elif level == "3":
+
+                # 1 sampai 10 supaya tersedia 10 soal unik
+                for base in range(1, 11):
+
+                    pool.append(
+                        (
+                            f"{base}³ = ?",
+                            base ** 3
+                        )
+                    )
+
 
         # ====================================================
         # AKAR
@@ -200,76 +317,123 @@ class QuizScreen(Screen):
 
         elif operation == "Akar":
 
-            root_type = int(level)
+            if level == "2":
 
-            if root_type == 2:
+                for base in range(1, 13):
 
-                base = random.randint(1, 12)
-                number = base ** 2
+                    number = base ** 2
 
-                self.question = f"√{number} = ?"
-                self.correct_answer = base
+                    pool.append(
+                        (
+                            f"√{number} = ?",
+                            base
+                        )
+                    )
 
-            else:
+            elif level == "3":
 
-                base = random.randint(1, 7)
-                number = base ** 3
+                # 1 sampai 10 supaya tersedia 10 soal unik
+                for base in range(1, 11):
 
-                self.question = f"∛{number} = ?"
-                self.correct_answer = base
+                    number = base ** 3
 
-    # ========================================================
-    # CEK JAWABAN
-    # ========================================================
+                    pool.append(
+                        (
+                            f"∛{number} = ?",
+                            base
+                        )
+                    )
+
+
+        # ====================================================
+        # ACAK KUMPULAN SOAL
+        # ====================================================
+
+        random.shuffle(pool)
+
+        # Ambil minimal 10 soal
+        self.question_pool = pool[:10]
+
+
+    # --------------------------------------------------------
+    # NEW QUESTION
+    # --------------------------------------------------------
+
+    def new_question(self):
+
+        # Kalau masih ada soal di dalam kumpulan
+        if self.question_pool:
+
+            question_data = self.question_pool.pop(0)
+
+            self.question = question_data[0]
+            self.correct_answer = question_data[1]
+
+        else:
+
+            # Pengaman jika pool kosong
+            self.create_question_pool()
+
+            question_data = self.question_pool.pop(0)
+
+            self.question = question_data[0]
+            self.correct_answer = question_data[1]
+
+
+    # --------------------------------------------------------
+    # SUBMIT ANSWER
+    # --------------------------------------------------------
 
     def submit_answer(self):
 
-        answer_box = self.ids.answer_input
-        answer_text = answer_box.text.strip()
+        answer_text = self.ids.answer_input.text.strip()
 
-        # Kalau kosong
+
+        # Jika kosong
         if not answer_text:
 
-            self.feedback = "Masukkan jawaban terlebih dahulu!"
-            self.feedback_color = "warning"
+            self.feedback = "Isi jawaban terlebih dahulu!"
+            self.feedback_color = "wrong"
 
-            answer_box.focus = True
             return
 
+
         try:
-            answer = int(answer_text)
+
+            user_answer = int(answer_text)
 
         except ValueError:
 
-            self.feedback = "Masukkan angka yang valid!"
+            self.feedback = "Masukkan angka!"
             self.feedback_color = "wrong"
 
-            answer_box.text = ""
-            answer_box.focus = True
             return
 
+
         # ====================================================
-        # JAWABAN BENAR
+        # CEK JAWABAN
         # ====================================================
 
-        if answer == self.correct_answer:
-
-            self.score += 10
+        if user_answer == self.correct_answer:
 
             self.feedback = "✓ Jawaban benar!"
             self.feedback_color = "correct"
 
-        # ====================================================
-        # JAWABAN SALAH
-        # ====================================================
+            self.score += 10
 
         else:
 
-            self.feedback = "✕ Jawaban salah!"
+            self.feedback = (
+                f"✗ Salah. Jawaban yang benar: "
+                f"{self.correct_answer}"
+            )
+
             self.feedback_color = "wrong"
 
+
         # Bersihkan input
-        answer_box.text = ""
+        self.ids.answer_input.text = ""
+
 
         # ====================================================
         # SELESAI 10 SOAL
@@ -281,45 +445,39 @@ class QuizScreen(Screen):
 
             app.final_score = self.score
 
-            # Beri waktu feedback terlihat
             Clock.schedule_once(
                 lambda dt: app.show_result(),
-                0.5
+                0.8
             )
-
-        # ====================================================
-        # LANJUT SOAL
-        # ====================================================
 
         else:
 
             self.question_number += 1
 
-            # Tunggu sebentar agar feedback sempat terlihat
             Clock.schedule_once(
-                self.next_question,
-                0.5
+                lambda dt: self.next_question(),
+                0.8
             )
 
-    # ========================================================
-    # SOAL BERIKUTNYA
-    # ========================================================
 
-    def next_question(self, *args):
+    # --------------------------------------------------------
+    # NEXT QUESTION
+    # --------------------------------------------------------
+
+    def next_question(self):
 
         self.new_question()
 
         self.ids.answer_input.text = ""
 
-        # Langsung aktifkan keyboard/input
         Clock.schedule_once(
-            self.focus_input,
-            0.1
+            lambda dt: self.focus_input(),
+            0.2
         )
 
 
 # ============================================================
-# RESULT
+# RESULT SCREEN
 # ============================================================
 
 class ResultScreen(Screen):
@@ -330,7 +488,9 @@ class ResultScreen(Screen):
 
         score = app.final_score
 
-        self.ids.score_label.text = f"{score} / 100"
+        # Tampilkan skor lengkap
+        self.ids.score_label.text = str(score)
+
 
         if score == 100:
 
@@ -339,24 +499,26 @@ class ResultScreen(Screen):
         elif score >= 80:
 
             self.ids.message_label.text = (
-                "Hebat! Tinggal sedikit lagi menuju sempurna."
+                "Hebat! Tinggal sedikit lagi "
+                "menuju sempurna."
             )
 
         elif score >= 60:
 
             self.ids.message_label.text = (
-                "Bagus! Terus latihan."
+                "Kerja bagus! Terus latihan."
             )
 
         else:
 
             self.ids.message_label.text = (
-                "Tidak apa-apa. Coba lagi dan tingkatkan skornya."
+                "Tidak apa-apa. Coba lagi "
+                "dan tingkatkan skornya."
             )
 
 
 # ============================================================
-# APP
+# MAIN APP
 # ============================================================
 
 class MathPracticeApp(App):
@@ -369,58 +531,50 @@ class MathPracticeApp(App):
 
     final_score = NumericProperty(0)
 
-    # ========================================================
+
+    # --------------------------------------------------------
     # BUILD
-    # ========================================================
+    # --------------------------------------------------------
 
     def build(self):
 
         sm = ScreenManager()
 
-        sm.add_widget(
-            LoginScreen(name="login")
-        )
+        sm.add_widget(LoginScreen(name="login"))
 
-        sm.add_widget(
-            HomeScreen(name="home")
-        )
+        sm.add_widget(HomeScreen(name="home"))
 
-        sm.add_widget(
-            OperationScreen(name="operation")
-        )
+        sm.add_widget(OperationScreen(name="operation"))
 
-        sm.add_widget(
-            LevelScreen(name="level")
-        )
+        sm.add_widget(LevelScreen(name="level"))
 
-        sm.add_widget(
-            QuizScreen(name="quiz")
-        )
+        sm.add_widget(QuizScreen(name="quiz"))
 
-        sm.add_widget(
-            ResultScreen(name="result")
-        )
+        sm.add_widget(ResultScreen(name="result"))
 
         return sm
 
-    # ========================================================
+
+    # --------------------------------------------------------
     # LOGIN
-    # ========================================================
+    # --------------------------------------------------------
 
     def login(self, username):
 
         username = username.strip()
 
         if not username:
+
             return
 
         self.username = username
 
         self.root.current = "home"
 
-    # ========================================================
-    # PILIH OPERASI
-    # ========================================================
+
+    # --------------------------------------------------------
+    # SELECT OPERATION
+    # --------------------------------------------------------
 
     def select_operation(self, operation):
 
@@ -428,82 +582,94 @@ class MathPracticeApp(App):
 
         self.root.current = "level"
 
-    # ========================================================
-    # PILIH LEVEL
-    # ========================================================
+
+    # --------------------------------------------------------
+    # SELECT LEVEL
+    # --------------------------------------------------------
 
     def select_level(self, level):
 
         self.selected_level = level
 
-        quiz = self.root.get_screen("quiz")
+        quiz_screen = self.root.get_screen("quiz")
 
-        quiz.start_quiz()
+        quiz_screen.start_quiz()
 
         self.root.current = "quiz"
 
-    # ========================================================
-    # HASIL
-    # ========================================================
+
+    # --------------------------------------------------------
+    # SHOW RESULT
+    # --------------------------------------------------------
 
     def show_result(self):
 
-        result = self.root.get_screen("result")
+        result_screen = self.root.get_screen("result")
 
-        result.update_result()
+        result_screen.update_result()
 
         self.root.current = "result"
 
-    # ========================================================
-    # COBA LAGI
-    # ========================================================
+
+    # --------------------------------------------------------
+    # RETRY QUIZ
+    # --------------------------------------------------------
 
     def retry_quiz(self):
 
-        quiz = self.root.get_screen("quiz")
+        quiz_screen = self.root.get_screen("quiz")
 
-        quiz.start_quiz()
+        quiz_screen.start_quiz()
 
         self.root.current = "quiz"
 
-    # ========================================================
-    # KEMBALI KE HOME
-    # ========================================================
+
+    # --------------------------------------------------------
+    # BACK HOME
+    # --------------------------------------------------------
 
     def back_home(self):
 
         self.root.current = "home"
 
-    # ========================================================
-    # GANTI LATIHAN
-    # ========================================================
+
+    # --------------------------------------------------------
+    # LEAVE QUIZ
+    # --------------------------------------------------------
 
     def leave_quiz(self):
 
-        quiz = self.root.get_screen("quiz")
+        quiz_screen = self.root.get_screen("quiz")
 
-        # Bersihkan soal yang sedang dikerjakan
-        quiz.question = ""
-        quiz.question_number = 1
-        quiz.score = 0
-        quiz.feedback = ""
-        quiz.feedback_color = ""
+        quiz_screen.question = ""
 
-        if "answer_input" in quiz.ids:
-            quiz.ids.answer_input.text = ""
-            quiz.ids.answer_input.focus = False
+        quiz_screen.question_number = 1
+
+        quiz_screen.score = 0
+
+        quiz_screen.feedback = ""
+
+        quiz_screen.question_pool = []
+
+        quiz_screen.ids.answer_input.text = ""
+
+        quiz_screen.ids.answer_input.focus = False
 
         self.root.current = "operation"
 
-    # ========================================================
+
+    # --------------------------------------------------------
     # LOGOUT
-    # ========================================================
+    # --------------------------------------------------------
 
     def logout(self):
 
         self.username = ""
+
         self.selected_operation = ""
+
         self.selected_level = ""
+
         self.final_score = 0
 
         self.root.current = "login"
