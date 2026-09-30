@@ -1,0 +1,530 @@
+#:import dp kivy.metrics.dp
+
+# ============================================================
+# CUSTOM WIDGETS (DESAIN CERIA & RESPONSIF)
+# ============================================================
+
+<FunButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: 0, 0, 0, 0
+    color: 1, 1, 1, 1
+    font_name: app.symbol_font
+    font_size: dp(15)
+    bold: True
+    size_hint_y: None
+    height: dp(52)
+    canvas.before:
+        Color:
+            rgba: (0.38, 0.42, 0.92, 1) if self.state == 'normal' else (0.28, 0.32, 0.82, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(20)]
+
+<FunCard@BoxLayout>:
+    orientation: "vertical"
+    padding: dp(20)
+    spacing: dp(12)
+    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+    canvas.before:
+        # Subtle Card Shadow Effect
+        Color:
+            rgba: 0, 0, 0, 0.06
+        RoundedRectangle:
+            pos: (self.x - dp(2), self.y - dp(4))
+            size: (self.width + dp(4), self.height + dp(4))
+            radius: [dp(26)]
+        # Main Card Background
+        Color:
+            rgba: 1, 1, 1, 0.98
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(25)]
+
+# Base Screen dengan Dekorasi Latar Belakang
+<ResponsiveScreen@Screen>:
+    canvas.before:
+        Color:
+            rgba: 0.92, 0.94, 0.98, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        # Decorative Elements
+        Color:
+            rgba: 0.38, 0.42, 0.92, 0.15
+        Ellipse:
+            pos: self.x - dp(60), self.top - dp(160)
+            size: dp(280), dp(280)
+        Color:
+            rgba: 0.98, 0.55, 0.65, 0.2
+        Ellipse:
+            pos: self.right - dp(160), self.y - dp(60)
+            size: dp(240), dp(240)
+        Color:
+            rgba: 0.3, 0.8, 0.4, 0.15
+        Ellipse:
+            pos: self.center_x - dp(40), self.center_y - dp(40)
+            size: dp(80), dp(80)
+
+# ============================================================
+# LOGIN SCREEN
+# ============================================================
+
+<LoginScreen>:
+    ResponsiveScreen:
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: (None, None)
+            width: min(root.width * 0.9, dp(440))
+            height: self.minimum_height
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+            FunCard:
+                size_hint_y: None
+                height: self.minimum_height
+
+                Label:
+                    text: "MATH FUN"
+                    font_size: dp(28)
+                    bold: True
+                    color: 0.2, 0.2, 0.4, 1
+                    size_hint_y: None
+                    height: dp(45)
+
+                Label:
+                    text: "Petualangan Matematika Seru!"
+                    font_size: dp(14)
+                    color: 0.5, 0.5, 0.6, 1
+                    size_hint_y: None
+                    height: dp(25)
+
+                Widget:
+                    size_hint_y: None
+                    height: dp(10)
+
+                TextInput:
+                    id: username
+                    hint_text: "Ketik Nama Kamu..."
+                    multiline: False
+                    font_size: dp(16)
+                    halign: "center"
+                    padding: [dp(10), dp(14)]
+                    size_hint_y: None
+                    height: dp(52)
+                    background_color: 0.95, 0.96, 0.98, 1
+                    cursor_color: 0.38, 0.42, 0.92, 1
+                    on_text_validate: app.login(self.text)
+
+                FunButton:
+                    text: "MULAI MAIN"
+                    on_release: app.login(username.text)
+
+# ============================================================
+# HOME SCREEN
+# ============================================================
+
+<HomeScreen>:
+    ResponsiveScreen:
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: (None, None)
+            width: min(root.width * 0.9, dp(440))
+            height: self.minimum_height
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+            FunCard:
+                spacing: dp(16)
+                size_hint_y: None
+                height: self.minimum_height
+
+                Label:
+                    text: "Halo, " + app.username + "!"
+                    font_size: dp(26)
+                    bold: True
+                    color: 0.2, 0.2, 0.4, 1
+                    size_hint_y: None
+                    height: dp(40)
+
+                Label:
+                    text: "Siap jago matematika hari ini?"
+                    font_size: dp(15)
+                    color: 0.5, 0.5, 0.6, 1
+                    size_hint_y: None
+                    height: dp(30)
+
+                FunButton:
+                    text: "PILIH GAME"
+                    on_release: root.manager.current = "operation"
+
+                FunButton:
+                    text: "RIWAYAT SKOR"
+                    on_release: app.show_history()
+
+                Button:
+                    text: "Keluar"
+                    background_normal: ""
+                    background_color: 0, 0, 0, 0
+                    color: 0.85, 0.35, 0.35, 1
+                    font_size: dp(14)
+                    bold: True
+                    size_hint_y: None
+                    height: dp(40)
+                    on_release: app.logout()
+
+# ============================================================
+# OPERATION SCREEN
+# ============================================================
+
+<OperationScreen>:
+    ResponsiveScreen:
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: (None, None)
+            width: min(root.width * 0.9, dp(440))
+            height: self.minimum_height
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+            FunCard:
+                size_hint_y: None
+                height: self.minimum_height
+
+                Label:
+                    text: "PILIH OPERASI"
+                    font_size: dp(24)
+                    bold: True
+                    color: 0.2, 0.2, 0.4, 1
+                    size_hint_y: None
+                    height: dp(40)
+
+                GridLayout:
+                    cols: 2
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: dp(280)
+
+                    FunButton:
+                        text: "×\nPerkalian"
+                        on_release: app.select_operation("Perkalian")
+
+                    FunButton:
+                        text: "÷\nPembagian"
+                        on_release: app.select_operation("Pembagian")
+
+                    FunButton:
+                        text: "+\nPertambahan"
+                        on_release: app.select_operation("Pertambahan")
+
+                    FunButton:
+                        text: "−\nPengurangan"
+                        on_release: app.select_operation("Pengurangan")
+
+                    FunButton:
+                        text: "x² / x³\nPerpangkatan"
+                        font_size: dp(13)
+                        on_release: app.select_operation("Perpangkatan")
+
+                    FunButton:
+                        text: "√ / \u221b\nAkar"
+                        font_size: dp(13)
+                        on_release: app.select_operation("Akar")
+
+                Button:
+                    text: "Kembali Ke Profil"
+                    background_normal: ""
+                    background_color: 0, 0, 0, 0
+                    color: 0.5, 0.5, 0.6, 1
+                    font_size: dp(14)
+                    size_hint_y: None
+                    height: dp(40)
+                    on_release: root.manager.current = "home"
+
+# ============================================================
+# LEVEL SCREEN (TANPA SCROLL)
+# ============================================================
+
+<LevelScreen>:
+    ResponsiveScreen:
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: (None, None)
+            width: min(root.width * 0.9, dp(440))
+            height: self.minimum_height
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+            FunCard:
+                size_hint_y: None
+                height: self.minimum_height
+
+                Label:
+                    text: "PILIH TINGKAT"
+                    font_size: dp(24)
+                    bold: True
+                    color: 0.2, 0.2, 0.4, 1
+                    size_hint_y: None
+                    height: dp(35)
+
+                Label:
+                    text: "Operasi: " + app.selected_operation
+                    font_size: dp(14)
+                    color: 0.38, 0.42, 0.92, 1
+                    bold: True
+                    size_hint_y: None
+                    height: dp(25)
+
+                BoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    # --- OPERASI DASAR ---
+                    FunButton:
+                        text: "Level A (Mudah)\nAngka 1 - 9"
+                        font_size: dp(14)
+                        opacity: 1 if app.selected_operation in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"] else 0
+                        disabled: app.selected_operation not in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"]
+                        height: dp(54) if app.selected_operation in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"] else dp(0)
+                        on_release: app.select_level("A")
+
+                    FunButton:
+                        text: "Level B (Sedang)\nAngka 10 - 50"
+                        font_size: dp(14)
+                        opacity: 1 if app.selected_operation in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"] else 0
+                        disabled: app.selected_operation not in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"]
+                        height: dp(54) if app.selected_operation in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"] else dp(0)
+                        on_release: app.select_level("B")
+
+                    FunButton:
+                        text: "Level C (Tantangan)\nAngka 60 - 100"
+                        font_size: dp(14)
+                        opacity: 1 if app.selected_operation in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"] else 0
+                        disabled: app.selected_operation not in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"]
+                        height: dp(54) if app.selected_operation in ["Perkalian", "Pembagian", "Pertambahan", "Pengurangan"] else dp(0)
+                        on_release: app.select_level("C")
+
+                    # --- PERPANGKATAN ---
+                    FunButton:
+                        text: "Pangkat 2\n(Contoh: 7² = 49)"
+                        font_size: dp(14)
+                        opacity: 1 if app.selected_operation == "Perpangkatan" else 0
+                        disabled: app.selected_operation != "Perpangkatan"
+                        height: dp(54) if app.selected_operation == "Perpangkatan" else dp(0)
+                        on_release: app.select_level("2")
+
+                    FunButton:
+                        text: "Pangkat 3\n(Contoh: 4³ = 64)"
+                        font_size: dp(14)
+                        opacity: 1 if app.selected_operation == "Perpangkatan" else 0
+                        disabled: app.selected_operation != "Perpangkatan"
+                        height: dp(54) if app.selected_operation == "Perpangkatan" else dp(0)
+                        on_release: app.select_level("3")
+
+                    # --- AKAR ---
+                    FunButton:
+                        text: "Akar Kuadrat (√)"
+                        font_size: dp(14)
+                        opacity: 1 if app.selected_operation == "Akar" else 0
+                        disabled: app.selected_operation != "Akar"
+                        height: dp(54) if app.selected_operation == "Akar" else dp(0)
+                        on_release: app.select_level("2")
+
+                    FunButton:
+                        text: "Akar Kubik (\u221b)"
+                        font_size: dp(14)
+                        opacity: 1 if app.selected_operation == "Akar" else 0
+                        disabled: app.selected_operation != "Akar"
+                        height: dp(54) if app.selected_operation == "Akar" else dp(0)
+                        on_release: app.select_level("3")
+
+                Button:
+                    text: "Kembali"
+                    background_normal: ""
+                    background_color: 0, 0, 0, 0
+                    color: 0.5, 0.5, 0.6, 1
+                    font_size: dp(14)
+                    size_hint_y: None
+                    height: dp(35)
+                    on_release: root.manager.current = "operation"
+
+# ============================================================
+# QUIZ SCREEN
+# ============================================================
+
+<QuizScreen>:
+    ResponsiveScreen:
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: (None, None)
+            width: min(root.width * 0.9, dp(440))
+            height: self.minimum_height
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+            FunCard:
+                size_hint_y: None
+                height: self.minimum_height
+
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(35)
+
+                    Label:
+                        text: "Soal " + str(root.question_number) + " / 10"
+                        font_size: dp(16)
+                        bold: True
+                        color: 0.38, 0.42, 0.92, 1
+
+                    Button:
+                        text: "Batal"
+                        background_normal: ""
+                        background_color: 0, 0, 0, 0
+                        color: 0.85, 0.35, 0.35, 1
+                        font_size: dp(13)
+                        bold: True
+                        size_hint_x: 0.3
+                        on_release: app.leave_quiz()
+
+                Label:
+                    text: root.question
+                    font_name: app.symbol_font
+                    font_size: dp(38)
+                    bold: True
+                    color: 0.2, 0.2, 0.3, 1
+                    halign: "center"
+                    valign: "middle"
+                    size_hint_y: None
+                    height: dp(90)
+
+                TextInput:
+                    id: answer_input
+                    multiline: False
+                    input_filter: "int"
+                    halign: "center"
+                    font_size: dp(26)
+                    padding: [dp(10), dp(10)]
+                    size_hint_y: None
+                    height: dp(55)
+                    background_color: 0.95, 0.96, 0.98, 1
+                    on_text_validate: root.submit_answer()
+
+                Label:
+                    text: root.feedback
+                    font_size: dp(14)
+                    bold: True
+                    halign: "center"
+                    size_hint_y: None
+                    height: dp(30)
+                    color: (0.15, 0.68, 0.38, 1) if root.feedback_color == "correct" else ((0.85, 0.25, 0.25, 1) if root.feedback_color == "wrong" else (0,0,0,0))
+
+                FunButton:
+                    text: "JAWAB"
+                    on_release: root.submit_answer()
+
+                Label:
+                    text: "Skor Sementara: " + str(root.score)
+                    font_size: dp(15)
+                    bold: True
+                    color: 0.4, 0.4, 0.5, 1
+                    halign: "center"
+                    size_hint_y: None
+                    height: dp(30)
+
+# ============================================================
+# RESULT SCREEN
+# ============================================================
+
+<ResultScreen>:
+    ResponsiveScreen:
+        BoxLayout:
+            id: container
+            orientation: "vertical"
+            size_hint: (None, None)
+            width: min(root.width * 0.9, dp(440))
+            height: self.minimum_height
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+            FunCard:
+                spacing: dp(12)
+                size_hint_y: None
+                height: self.minimum_height
+
+                Label:
+                    text: "HASIL KAMU"
+                    font_size: dp(24)
+                    bold: True
+                    color: 0.2, 0.2, 0.4, 1
+                    size_hint_y: None
+                    height: dp(35)
+
+                Label:
+                    id: score_label
+                    text: "0"
+                    font_size: dp(60)
+                    bold: True
+                    color: 0.38, 0.42, 0.92, 1
+                    size_hint_y: None
+                    height: dp(75)
+
+                Label:
+                    id: message_label
+                    text: ""
+                    font_size: dp(15)
+                    color: 0.4, 0.4, 0.5, 1
+                    halign: "center"
+                    valign: "middle"
+                    text_size: self.width, None
+                    size_hint_y: None
+                    height: dp(55)
+
+                FunButton:
+                    text: "COBA LAGI"
+                    on_release: app.retry_quiz()
+
+                FunButton:
+                    text: "MENU UTAMA"
+                    on_release: app.back_home()
+
+# ============================================================
+# HISTORY SCREEN
+# ============================================================
+
+<HistoryScreen>:
+    ResponsiveScreen:
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: (None, None)
+            width: min(root.width * 0.9, dp(440))
+            height: min(root.height * 0.85, dp(550))
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+            FunCard:
+                Label:
+                    text: "RIWAYAT LATIHAN"
+                    font_size: dp(22)
+                    bold: True
+                    color: 0.2, 0.2, 0.4, 1
+                    size_hint_y: None
+                    height: dp(35)
+
+                ScrollView:
+                    do_scroll_x: False
+                    do_scroll_y: True
+
+                    BoxLayout:
+                        id: history_container
+                        orientation: "vertical"
+                        spacing: dp(8)
+                        size_hint_y: None
+                        height: self.minimum_height
+
+                Button:
+                    text: "Kembali"
+                    background_normal: ""
+                    background_color: 0, 0, 0, 0
+                    color: 0.5, 0.5, 0.6, 1
+                    font_size: dp(14)
+                    bold: True
+                    size_hint_y: None
+                    height: dp(35)
+                    on_release: root.manager.current = "home"
