@@ -41,9 +41,18 @@ from kivy.uix.widget import Widget
 # DATABASE UTILITIES
 # ============================================================
 
+def get_database_path():
+    """Use a writable per-app directory on Android."""
+    app = App.get_running_app()
+    if app is not None:
+        os.makedirs(app.user_data_dir, exist_ok=True)
+        return os.path.join(app.user_data_dir, "history.db")
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "history.db")
+
+
 def init_db():
     """Inisialisasi tabel SQLite untuk menyimpan riwayat latihan."""
-    conn = sqlite3.connect("history.db")
+    conn = sqlite3.connect(get_database_path())
     cursor = conn.cursor()
     cursor.execute(
         """
@@ -63,7 +72,7 @@ def init_db():
 
 def save_score(username, score, operation, level):
     """Menyimpan hasil kuis ke database."""
-    conn = sqlite3.connect("history.db")
+    conn = sqlite3.connect(get_database_path())
     cursor = conn.cursor()
     cursor.execute(
         """
@@ -84,7 +93,7 @@ def save_score(username, score, operation, level):
 
 def get_history():
     """Mengambil riwayat latihan dari database."""
-    conn = sqlite3.connect("history.db")
+    conn = sqlite3.connect(get_database_path())
     cursor = conn.cursor()
     cursor.execute(
         "SELECT id, username, score, operation, level "
@@ -97,7 +106,7 @@ def get_history():
 
 def delete_score(history_id):
     """Menghapus satu hasil latihan berdasarkan id database."""
-    conn = sqlite3.connect("history.db")
+    conn = sqlite3.connect(get_database_path())
     cursor = conn.cursor()
     cursor.execute("DELETE FROM quiz_history WHERE id = ?", (history_id,))
     conn.commit()
@@ -189,7 +198,8 @@ class CelebrationParticles(Widget):
 # LOAD KV
 # ============================================================
 
-Builder.load_file("mathpractice.kv")
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+Builder.load_file(os.path.join(APP_DIR, "mathpractice.kv"))
 
 
 # ============================================================

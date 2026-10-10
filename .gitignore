@@ -1,0 +1,6 @@
+/.buildozer/
+/.venv/
+/bin/
+/history.db
+__pycache__/
+*.py[cod]

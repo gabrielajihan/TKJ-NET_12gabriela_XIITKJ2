@@ -1,0 +1,5 @@
+{
+  "name": "MathPractice Android Build",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "postCreateCommand": "bash .devcontainer/setup-android.sh"
+}
